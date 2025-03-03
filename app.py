@@ -3,7 +3,7 @@ import sqlite3
 import random
 import string
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='img')  # Настроили папку для статичных файлов
 
 
 # Функция для подключения к базе данных
@@ -66,47 +66,6 @@ def add_guest():
     return render_template('add_guest.html')
 
 
-# Страница списка гостей
-@app.route('/guests_list')
-def guests_list():
-    conn = get_db()
-    cursor = conn.cursor()
-
-    # Получаем список всех гостей, включая данные о номере (room_id) и описании номера
-    cursor.execute('''
-        SELECT g.id, r.id, g.check_in_date, g.check_out_date, g.prepayment, g.visitor_info, r.description
-        FROM guests g
-        JOIN rooms r ON g.room_id = r.id
-    ''')
-    guests = cursor.fetchall()
-    conn.close()
-
-    return render_template('guests_list.html', guests=guests)
-
-
-# Страница добавления номера
-@app.route('/add_room', methods=['GET', 'POST'])
-def add_room():
-    if request.method == 'POST':
-        hotel_id = request.form['hotel_id']
-        description = request.form['description']
-        places = request.form['places']
-        price_per_day = request.form['price_per_day']
-        status = request.form['status']
-
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO rooms (hotel_id, description, places, price_per_day, status)
-            VALUES (?, ?, ?, ?, ?)
-        ''', (hotel_id, description, places, price_per_day, status))
-        conn.commit()
-        conn.close()
-        return redirect(url_for('index'))
-
-    return render_template('add_room.html')
-
-
 # Страница добавления бронирования
 @app.route('/add_booking', methods=['GET', 'POST'])
 def add_booking():
@@ -126,6 +85,84 @@ def add_booking():
         return redirect(url_for('index'))
 
     return render_template('add_booking.html')
+
+
+# Страница списка гостей
+@app.route('/guests_list')
+def guests_list():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Получаем список всех гостей, включая данные о номере (room_id) и описании номера
+    cursor.execute('''
+        SELECT g.id, r.id, g.check_in_date, g.check_out_date, g.prepayment, g.visitor_info, r.description
+        FROM guests g
+        JOIN rooms r ON g.room_id = r.id
+    ''')
+    guests = cursor.fetchall()
+    conn.close()
+
+    return render_template('guests_list.html', guests=guests)
+
+
+# Страница регистрации гостя
+@app.route('/register_guest', methods=['GET', 'POST'])
+def register_guest():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Получаем список всех доступных номеров
+    cursor.execute('SELECT * FROM rooms')
+    rooms = cursor.fetchall()
+    conn.close()
+
+    if request.method == 'POST':
+        room_id = request.form['room_id']
+        check_in_date = request.form['check_in_date']
+        check_out_date = request.form['check_out_date']
+        prepayment = request.form['prepayment']
+        visitor_info = request.form['visitor_info']
+
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO guests (room_id, check_in_date, check_out_date, prepayment, visitor_info)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (room_id, check_in_date, check_out_date, prepayment, visitor_info))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('guests_list'))
+
+    return render_template('register_guest.html', rooms=rooms)
+
+
+# Страница бронирования
+@app.route('/book_room', methods=['GET', 'POST'])
+def book_room():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Получаем список всех доступных номеров
+    cursor.execute('SELECT * FROM rooms')
+    rooms = cursor.fetchall()
+    conn.close()
+
+    if request.method == 'POST':
+        room_id = request.form['room_id']
+        arrival_date = request.form['arrival_date']
+        visitor_info = request.form['visitor_info']
+
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO bookings (room_id, arrival_date, visitor_info)
+            VALUES (?, ?, ?)
+        ''', (room_id, arrival_date, visitor_info))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('index'))
+
+    return render_template('book_room.html', rooms=rooms)
 
 
 if __name__ == '__main__':

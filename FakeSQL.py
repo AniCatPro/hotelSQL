@@ -2,9 +2,9 @@ import sqlite3
 import random
 from faker import Faker
 import datetime
+import os
 
 fake = Faker('ru_RU')
-
 
 # Функция для генерации ИНН для физических лиц
 def generate_inn_physical():
@@ -14,7 +14,6 @@ def generate_inn_physical():
     inn = f"{region_code:02d}{unique_code:09d}{control_number:02d}"
     return inn
 
-
 # Функция для генерации ИНН для юридических лиц
 def generate_inn_legal():
     tax_code = random.randint(1000, 9999)  # Код налогового органа (4 цифры)
@@ -22,7 +21,6 @@ def generate_inn_legal():
     control_number = random.randint(10, 99)  # Контрольное число (2 цифры)
     inn = f"{tax_code}{unique_code:08d}{control_number:02d}"  # ИНН может быть 10 или 12 цифр
     return inn
-
 
 # Функция для генерации данных для таблицы гостиниц
 def generate_hotels(cursor, num_hotels=10):
@@ -37,9 +35,7 @@ def generate_hotels(cursor, num_hotels=10):
         hotel = (name, inn, director, owner, address, stars)
         hotels.append(hotel)
 
-    cursor.executemany("INSERT INTO hotels (name, inn, director, owner, address, stars) VALUES (?, ?, ?, ?, ?, ?)",
-                       hotels)
-
+    cursor.executemany("INSERT INTO hotels (name, inn, director, owner, address, stars) VALUES (?, ?, ?, ?, ?, ?)", hotels)
 
 # Функция для генерации данных для должностей
 def generate_positions(cursor):
@@ -51,7 +47,6 @@ def generate_positions(cursor):
         ('Шеф-повар', 40000)
     ]
     cursor.executemany("INSERT INTO positions (name, salary) VALUES (?, ?)", positions)
-
 
 # Функция для генерации персонала
 def generate_staff(cursor, num_hotels=10):
@@ -65,16 +60,13 @@ def generate_staff(cursor, num_hotels=10):
         staff_member = (hotel_id, inn, name, position_id, salary_factor)
         staff.append(staff_member)
 
-    cursor.executemany("INSERT INTO staff (hotel_id, inn, name, position_id, salary_factor) VALUES (?, ?, ?, ?, ?)",
-                       staff)
-
+    cursor.executemany("INSERT INTO staff (hotel_id, inn, name, position_id, salary_factor) VALUES (?, ?, ?, ?, ?)", staff)
 
 # Генерация данных для номеров
 def generate_rooms(cursor):
     hotels_count = cursor.execute("SELECT COUNT(*) FROM hotels").fetchone()[0]
     rooms = []
 
-    # Характеристики для описания номеров
     room_types = ["Стандартный", "Люкс", "Эконом"]
     room_sizes = ["Маленький", "Средний", "Большой"]
     bed_types = ["Односпальная", "Двуспальная", "Раскладушка", "Кровать с балдахином"]
@@ -89,21 +81,18 @@ def generate_rooms(cursor):
             room_type = random.choice(room_types)
             room_size = random.choice(room_sizes)
             bed_type = random.choice(bed_types)
-            occupancy = random.choice(max_occupancy)  # Максимальное количество людей
-            floor = random.choice(floor_levels)  # Этаж
-            view = random.choice(views)  # Вид из окна
-            room_amenities = random.sample(amenities, 2)  # выбираем 2 удобства
-            status = random.choice(statuses)  # Статус номера (Работает или На ремонте)
+            occupancy = random.choice(max_occupancy)
+            floor = random.choice(floor_levels)
+            view = random.choice(views)
+            room_amenities = random.sample(amenities, 2)
+            status = random.choice(statuses)
 
-            # Составляем описание
             description = f"{room_size} {room_type} номер, {bed_type} кровать, максимальное количество: {occupancy} человек, " \
                           f"этаж {floor}, вид: {view}, удобства: " + ", ".join(room_amenities)
 
             rooms.append((hotel_id, description, occupancy, fake.random_int(min=1000, max=5000), status))
 
-    cursor.executemany(
-        "INSERT INTO rooms (hotel_id, description, places, price_per_day, status) VALUES (?, ?, ?, ?, ?)", rooms)
-
+    cursor.executemany("INSERT INTO rooms (hotel_id, description, places, price_per_day, status) VALUES (?, ?, ?, ?, ?)", rooms)
 
 # Функция для генерации данных для бронирований
 def generate_bookings(cursor, num_rooms=10):
@@ -117,26 +106,32 @@ def generate_bookings(cursor, num_rooms=10):
 
     cursor.executemany("INSERT INTO bookings (room_id, arrival_date, visitor_info) VALUES (?, ?, ?)", bookings)
 
-
 # Функция для генерации данных для гостей
 def generate_guests(cursor, num_rooms=10):
     guests = []
+    rooms = cursor.execute("SELECT id, hotel_id FROM rooms").fetchall()
+
     for _ in range(num_rooms):
-        room_id = random.randint(1, num_rooms)
+        room = random.choice(rooms)  # Случайный выбор номера
+        room_id = room[0]
+        hotel_id = room[1]  # Извлекаем hotel_id для этого номера
+
         check_in_date = fake.date_this_year()
         check_out_date = str(fake.date_between(start_date=check_in_date, end_date="+10d"))
         prepayment = random.randint(1000, 5000)
         visitor_info = fake.name()
-        guest = (room_id, check_in_date, check_out_date, prepayment, visitor_info)
+
+        guest = (hotel_id, room_id, check_in_date, check_out_date, prepayment, visitor_info)
         guests.append(guest)
 
-    cursor.executemany(
-        "INSERT INTO guests (room_id, check_in_date, check_out_date, prepayment, visitor_info) VALUES (?, ?, ?, ?, ?)",
-        guests)
-
+    cursor.executemany("INSERT INTO guests (hotel_id, room_id, check_in_date, check_out_date, prepayment, visitor_info) VALUES (?, ?, ?, ?, ?, ?)", guests)
 
 # Подключаемся к базе данных и создаем таблицы
 def create_tables():
+    # Удаляем старую базу данных, если она существует
+    if os.path.exists('hotel.db'):
+        os.remove('hotel.db')
+
     connection = sqlite3.connect('hotel.db')
     cursor = connection.cursor()
 
@@ -187,12 +182,14 @@ def create_tables():
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS guests (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        hotel_id INTEGER,
                         room_id INTEGER,
                         check_in_date TEXT,
                         check_out_date TEXT,
                         prepayment INTEGER,
                         visitor_info TEXT,
-                        FOREIGN KEY (room_id) REFERENCES rooms(id)
+                        FOREIGN KEY (room_id) REFERENCES rooms(id),
+                        FOREIGN KEY (hotel_id) REFERENCES hotels(id)
                       )''')
 
     # Генерация данных
@@ -207,6 +204,4 @@ def create_tables():
     connection.close()
     print("Таблицы созданы и данные загружены!")
 
-
-if __name__ == "__main__":
-    create_tables()
+create_tables()

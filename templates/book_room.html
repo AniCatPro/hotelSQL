@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бронирование номера</title>
+</head>
+<body>
+    <h1>Бронирование номера</h1>
+    <form method="POST">
+        <label for="room_id">Выберите номер:</label>
+        <select name="room_id" id="room_id" required>
+            {% for room in rooms %}
+                <option value="{{ room['id'] }}">{{ room['description'] }} ({{ room['places'] }} мест)</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="arrival_date">Дата прибытия:</label>
+        <input type="date" name="arrival_date" required><br>
+
+        <label for="visitor_info">Информация о посетителе:</label>
+        <textarea name="visitor_info" required></textarea><br>
+
+        <button type="submit">Забронировать номер</button>
+    </form>
+    <a href="{{ url_for('index') }}">Назад</a>
+</body>
+</html>
