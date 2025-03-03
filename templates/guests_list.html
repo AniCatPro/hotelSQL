@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список гостей</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Список гостей</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID Гостя</th>
+                <th>Номер</th>
+                <th>Описание номера</th>
+                <th>Дата заезда</th>
+                <th>Дата отъезда</th>
+                <th>Аванс</th>
+                <th>Данные о посетителе</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for guest in guests %}
+            <tr>
+                <td>{{ guest[0] }}</td>
+                <td>{{ guest[1] }}</td>
+                <td>{{ guest[6] }}</td> <!-- Описание номера -->
+                <td>{{ guest[2] }}</td>
+                <td>{{ guest[3] }}</td>
+                <td>{{ guest[4] }}</td>
+                <td>{{ guest[5] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('index') }}">Назад</a>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Гостиница</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Добро пожаловать в систему управления гостиницей</h1>
+    <div>
+        <a href="{{ url_for('add_hotel') }}">Добавить гостиницу</a>
+        <a href="{{ url_for('guests_list') }}">Список гостей</a>
+    </div>
+</body>
+</html>
