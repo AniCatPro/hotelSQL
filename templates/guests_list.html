@@ -3,37 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список гостей</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Список гостей - Сеть гостиниц</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .back-link-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .back-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .back-link:hover {
+            background-color: #45a049;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Список гостей</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID Гостя</th>
-                <th>Номер</th>
-                <th>Описание номера</th>
-                <th>Дата заезда</th>
-                <th>Дата отъезда</th>
-                <th>Аванс</th>
-                <th>Данные о посетителе</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for guest in guests %}
-            <tr>
-                <td>{{ guest[0] }}</td>
-                <td>{{ guest[1] }}</td>
-                <td>{{ guest[6] }}</td>
-                <td>{{ guest[2] }}</td>
-                <td>{{ guest[3] }}</td>
-                <td>{{ guest[4] }}</td>
-                <td>{{ guest[5] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="{{ url_for('index') }}">Назад</a>
+    <header>
+        <h1>Список гостей</h1>
+    </header>
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Гостя</th>
+                    <th>Номер</th>
+                    <th>Описание номера</th>
+                    <th>Дата заезда</th>
+                    <th>Дата отъезда</th>
+                    <th>Аванс</th>
+                    <th>Данные о посетителе</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for guest in guests %}
+                <tr>
+                    <td>{{ guest[0] }}</td>
+                    <td>{{ guest[1] }}</td>
+                    <td>{{ guest[6] }}</td>
+                    <td>{{ guest[2] }}</td>
+                    <td>{{ guest[3] }}</td>
+                    <td>{{ guest[4] }}</td>
+                    <td>{{ guest[5] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="back-link-container">
+            <a href="{{ url_for('index') }}" class="back-link">Назад</a>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 Сеть гостиниц | Все права защищены</p>
+    </footer>
 </body>
 </html>

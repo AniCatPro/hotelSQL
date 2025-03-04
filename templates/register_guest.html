@@ -3,32 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация гостя</title>
+    <title>Регистрация гостя - Сеть гостиниц</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        select,
+        input[type="date"],
+        input[type="number"],
+        textarea {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            max-width: 200px;
+            align-self: center;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .back-link-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .back-link:hover {
+            background-color: #45a049;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Регистрация гостя</h1>
-    <form method="POST">
-        <label for="room_id">Выберите номер:</label>
-        <select name="room_id" id="room_id" required>
-            {% for room in rooms %}
+    <header>
+        <h1>Регистрация гостя</h1>
+    </header>
+    <div class="container">
+        <form method="POST">
+            <label for="room_id">Выберите номер:</label>
+            <select name="room_id" id="room_id" required>
+                {% for room in rooms %}
                 <option value="{{ room['id'] }}">{{ room['description'] }} ({{ room['places'] }} мест)</option>
-            {% endfor %}
-        </select><br>
+                {% endfor %}
+            </select>
 
-        <label for="check_in_date">Дата заезда:</label>
-        <input type="date" name="check_in_date" required><br>
+            <label for="check_in_date">Дата заезда:</label>
+            <input type="date" name="check_in_date" required>
 
-        <label for="check_out_date">Дата отъезда:</label>
-        <input type="date" name="check_out_date" required><br>
+            <label for="check_out_date">Дата отъезда:</label>
+            <input type="date" name="check_out_date" required>
 
-        <label for="prepayment">Аванс:</label>
-        <input type="number" name="prepayment" required><br>
+            <label for="prepayment">Аванс:</label>
+            <input type="number" name="prepayment" required>
 
-        <label for="visitor_info">Информация о посетителе:</label>
-        <textarea name="visitor_info" required></textarea><br>
+            <label for="visitor_info">Информация о посетителе:</label>
+            <textarea name="visitor_info" required></textarea>
 
-        <button type="submit">Зарегистрировать гостя</button>
-    </form>
-    <a href="{{ url_for('guests_list') }}">Назад к списку гостей</a>
+            <button type="submit">Зарегистрировать гостя</button>
+        </form>
+        <div class="back-link-container">
+            <a href="{{ url_for('index') }}" class="back-link">Назад</a>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 Сеть гостиниц | Все права защищены</p>
+    </footer>
 </body>
 </html>
