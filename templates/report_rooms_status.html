@@ -3,14 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Статус номеров</title>
+    <title>Отчет: Статус номеров</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .status-free {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-occupied {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Статус номеров на заданную дату</h1>
-    <ul>
-        {% for room in rooms_status %}
-            <li>Номер: {{ room.description }} - Статус: {{ room.status }}</li>
-        {% endfor %}
-    </ul>
+<header>
+    <h1>Статус номеров на {{ report_date }}</h1>
+</header>
+<div class="container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID номера</th>
+                <th>Описание</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in rooms_status %}
+            <tr>
+                <td>{{ room.id }}</td>
+                <td>{{ room.description }}</td>
+                <td class="{{ 'status-free' if room.status == 'Свободен' else 'status-occupied' }}">
+                    {{ room.status }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<footer>
+    <p>&copy; 2025 Сеть гостиниц | Все права защищены</p>
+</footer>
 </body>
 </html>
