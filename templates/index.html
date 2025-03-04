@@ -17,6 +17,13 @@
             text-align: center;
             padding: 20px;
             font-size: 24px;
+            position: relative;
+        }
+        .logo-container {
+            margin-bottom: 10px; /* Adjust spacing as needed */
+        }
+        header img {
+            height: 50px; /* Adjust height as required */
         }
         .container {
             display: flex;
@@ -99,9 +106,11 @@
 </head>
 <body>
     <header>
+        <div class="logo-container">
+            <img src="img/logo.png" alt="Логотип">
+        </div>
         <h1>Добро пожаловать в сеть гостиниц</h1>
     </header>
-
     <!-- Слайдер изображений -->
     <div class="slider-container">
         <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
@@ -109,13 +118,11 @@
             <img src="{{ url_for('static', filename='1.png') }}" alt="Гостиница 1">
             <img src="{{ url_for('static', filename='2.png') }}" alt="Гостиница 2">
             <img src="{{ url_for('static', filename='3.png') }}" alt="Гостиница 3">
-            <!-- <img src="{{ url_for('static', filename='4.png') }}" alt="Гостиница 4"> -->
             <img src="{{ url_for('static', filename='5.png') }}" alt="Гостиница 5">
             <img src="{{ url_for('static', filename='6.png') }}" alt="Гостиница 6">
         </div>
         <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
     </div>
-
     <div class="container">
         <div class="card">
             <h3>Добавить новую гостиницу</h3>
@@ -138,11 +145,9 @@
             <a href="{{ url_for('reports') }}">Сформировать отчеты</a>
         </div>
     </div>
-
     <footer>
         <p>&copy; 2025 Сеть гостиниц | Все права защищены</p>
     </footer>
-
     <script>
         let currentSlide = 0;
         function moveSlide(step) {
