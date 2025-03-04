@@ -129,10 +129,10 @@ def generate_guests(cursor, num_rooms=10):
 # Подключаемся к базе данных и создаем таблицы
 def create_tables():
     # Удаляем старую базу данных, если она существует
-    if os.path.exists('hotel.db'):
-        os.remove('hotel.db')
+    if os.path.exists('fake_hotel.db'):
+        os.remove('fake_hotel.db')
 
-    connection = sqlite3.connect('hotel.db')
+    connection = sqlite3.connect('fake_hotel.db')
     cursor = connection.cursor()
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS hotels (
