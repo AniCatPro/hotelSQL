@@ -330,5 +330,23 @@ def update_guest():
 
     return redirect(url_for('guests_list'))
 
+@app.route('/search_guest', methods=['GET'])
+def search_guest():
+    query = request.args.get('query')
+    if not query:
+        return redirect(url_for('guests_list'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT g.id, r.id as room_id, g.check_in_date, g.check_out_date, g.prepayment, g.visitor_info, r.description
+        FROM guests g JOIN rooms r ON g.room_id = r.id
+        WHERE g.visitor_info LIKE ? OR r.description LIKE ? OR g.id LIKE ? OR r.id LIKE ?
+    ''', (f'%{query}%', f'%{query}%', f'%{query}%', f'%{query}%'))
+    guests = cursor.fetchall()
+    conn.close()
+
+    return render_template('guests_list.html', guests=guests, query=query)
+
 if __name__ == '__main__':
     app.run(debug=True)

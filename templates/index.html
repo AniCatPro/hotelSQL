@@ -20,10 +20,10 @@
             position: relative;
         }
         .logo-container {
-            margin-bottom: 10px; /* Adjust spacing as needed */
+            margin-bottom: 10px;
         }
         header img {
-            height: 50px; /* Adjust height as required */
+            height: 50px;
         }
         .container {
             display: flex;
@@ -65,7 +65,7 @@
             padding: 20px;
             margin-top: 50px;
         }
-        /* Стили для слайдера */
+        /* Стиль для слайдера */
         .slider-container {
             max-width: 600px;
             margin: 30px auto;
@@ -96,66 +96,95 @@
             padding: 10px 15px;
             transform: translateY(-50%);
         }
-        .prev {
-            left: 10px;
+        .prev { left: 10px; }
+        .next { right: 10px; }
+        /* Новые стили для поисковой панели */
+        .search-container {
+            text-align: center;
+            margin: 20px 0;
         }
-        .next {
-            right: 10px;
+        .search-container input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
+        .search-container input[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .search-container input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo-container">
-            <img src="img/logo.png" alt="Логотип">
-        </div>
-        <h1>Добро пожаловать в сеть гостиниц</h1>
-    </header>
-    <!-- Слайдер изображений -->
-    <div class="slider-container">
-        <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
-        <div class="slider">
-            <img src="{{ url_for('static', filename='1.png') }}" alt="Гостиница 1">
-            <img src="{{ url_for('static', filename='2.png') }}" alt="Гостиница 2">
-            <img src="{{ url_for('static', filename='3.png') }}" alt="Гостиница 3">
-            <img src="{{ url_for('static', filename='5.png') }}" alt="Гостиница 5">
-            <img src="{{ url_for('static', filename='6.png') }}" alt="Гостиница 6">
-        </div>
-        <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
+<header>
+    <div class="logo-container">
+        <img src="img/logo.png" alt="Логотип">
     </div>
-    <div class="container">
-        <div class="card">
-            <h3>Добавить новую гостиницу</h3>
-            <a href="{{ url_for('add_hotel') }}">Добавить гостиницу</a>
-        </div>
-        <div class="card">
-            <h3>Добавить нового гостя</h3>
-            <a href="{{ url_for('register_guest') }}">Зарегистрировать гостя</a>
-        </div>
-        <div class="card">
-            <h3>Забронировать номер</h3>
-            <a href="{{ url_for('book_room') }}">Забронировать номер</a>
-        </div>
-        <div class="card">
-            <h3>Список гостей</h3>
-            <a href="{{ url_for('guests_list') }}">Посмотреть список гостей</a>
-        </div>
-        <div class="card">
-            <h3>Перейти к отчетам</h3>
-            <a href="{{ url_for('reports') }}">Сформировать отчеты</a>
-        </div>
+    <h1>Добро пожаловать в сеть гостиниц</h1>
+</header>
+<!-- Поле поиска -->
+<div class="search-container">
+    <form action="{{ url_for('search_guest') }}" method="get">
+        <input type="text" name="query" placeholder="Введите данные гостя для поиска">
+        <input type="submit" value="Поиск">
+    </form>
+</div>
+
+<!-- Слайдер изображений -->
+<div class="slider-container">
+    <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+    <div class="slider">
+        <img src="{{ url_for('static', filename='1.png') }}" alt="Гостиница 1">
+        <img src="{{ url_for('static', filename='2.png') }}" alt="Гостиница 2">
+        <img src="{{ url_for('static', filename='3.png') }}" alt="Гостиница 3">
+        <img src="{{ url_for('static', filename='5.png') }}" alt="Гостиница 5">
+        <img src="{{ url_for('static', filename='6.png') }}" alt="Гостиница 6">
     </div>
-    <footer>
-        <p>&copy; 2025 Сеть гостиниц | Все права защищены</p>
-    </footer>
-    <script>
-        let currentSlide = 0;
-        function moveSlide(step) {
-            const slides = document.querySelectorAll('.slider img');
-            const totalSlides = slides.length;
-            currentSlide = (currentSlide + step + totalSlides) % totalSlides;
-            document.querySelector('.slider').style.transform = `translateX(-${currentSlide * 100}%)`;
-        }
-    </script>
+    <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
+</div>
+<div class="container">
+    <div class="card">
+        <h3>Добавить новую гостиницу</h3>
+        <a href="{{ url_for('add_hotel') }}">Добавить гостиницу</a>
+    </div>
+    <div class="card">
+        <h3>Добавить нового гостя</h3>
+        <a href="{{ url_for('register_guest') }}">Зарегистрировать гостя</a>
+    </div>
+    <div class="card">
+        <h3>Забронировать номер</h3>
+        <a href="{{ url_for('book_room') }}">Забронировать номер</a>
+    </div>
+    <div class="card">
+        <h3>Список гостей</h3>
+        <a href="{{ url_for('guests_list') }}">Посмотреть список гостей</a>
+    </div>
+    <div class="card">
+        <h3>Перейти к отчетам</h3>
+        <a href="{{ url_for('reports') }}">Сформировать отчеты</a>
+    </div>
+</div>
+<footer>
+    <p>&copy; 2025 Сеть гостиниц | Все права защищены</p>
+</footer>
+<script>
+    let currentSlide = 0;
+    function moveSlide(step) {
+        const slides = document.querySelectorAll('.slider img');
+        const totalSlides = slides.length;
+        currentSlide = (currentSlide + step + totalSlides) % totalSlides;
+        document.querySelector('.slider').style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+</script>
 </body>
 </html>
