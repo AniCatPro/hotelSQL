@@ -5,39 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Отчет: Свободные номера</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 0; }
-        header { background-color: #4CAF50; color: white; text-align: center; padding: 20px; }
-        .container { display: flex; justify-content: center; margin-top: 50px; }
-        table { width: 80%; margin: 20px auto; border-collapse: collapse; }
-        th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
-        th { background-color: #4CAF50; color: white; }
-        footer { background-color: #333; color: white; text-align: center; padding: 20px; margin-top: 50px; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Свободные номера на {{ report_date }}</h1>
-    </header>
-    <div class="container">
-        <table>
-            <thead>
-                <tr>
-                    <th>ID номера</th>
-                    <th>Описание</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for room in available_rooms %}
-                <tr>
-                    <td>{{ room.id }}</td>
-                    <td>{{ room.description }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <footer>
-        <p>&copy; 2025 Сеть гостиниц | Все права защищены</p>
-    </footer>
+<header>
+    <h1>Свободные номера на {{ report_date }}</h1>
+</header>
+<div class="container">
+    <table>
+        <thead>
+        <tr>
+            <th>ID номера</th>
+            <th>Описание</th>
+            <th>Название Отеля</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for room in available_rooms %}
+        <tr>
+            <td>{{ room.id }}</td>
+            <td>{{ room.description }}</td>
+            <td>{{ room.hotel_name }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<footer>
+    <p>&copy; 2025 Сеть гостиниц | Все права защищены</p>
+</footer>
 </body>
 </html>

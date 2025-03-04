@@ -188,8 +188,9 @@ def available_rooms_report():
     conn = get_db()
     cursor = conn.cursor()
     query = """
-    SELECT r.id, r.description
+    SELECT r.id, r.description, h.name as hotel_name
     FROM rooms r
+    JOIN hotels h ON r.hotel_id = h.id
     WHERE r.id NOT IN (
         SELECT g.room_id FROM guests g WHERE (g.check_in_date <= ? AND g.check_out_date >= ?)
     )
@@ -302,14 +303,13 @@ def available_rooms_grouped_report():
 @app.route('/delete_guest', methods=['POST'])
 def delete_guest():
     guest_id = request.form['id']
-
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('DELETE FROM guests WHERE id = ?', (guest_id,))
     conn.commit()
     conn.close()
-
     return redirect(url_for('guests_list'))
+
 
 # Добавляем маршрут для обновления записи о госте
 @app.route('/update_guest', methods=['POST'])
@@ -319,7 +319,6 @@ def update_guest():
     check_out_date = request.form['check_out_date']
     prepayment = request.form['prepayment']
     visitor_info = request.form['visitor_info']
-
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('''
@@ -327,8 +326,8 @@ def update_guest():
     ''', (check_in_date, check_out_date, prepayment, visitor_info, guest_id))
     conn.commit()
     conn.close()
-
     return redirect(url_for('guests_list'))
+
 
 @app.route('/search_guest', methods=['GET'])
 def search_guest():
@@ -347,6 +346,7 @@ def search_guest():
     conn.close()
 
     return render_template('guests_list.html', guests=guests, query=query)
+
 
 @app.route('/autocomplete_guest', methods=['GET'])
 def autocomplete_guest():
@@ -367,6 +367,7 @@ def autocomplete_guest():
 
     suggestions = [{'visitor_info': row['visitor_info'], 'room_id': row['room_id']} for row in results]
     return jsonify(suggestions)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
