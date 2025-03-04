@@ -164,9 +164,84 @@ def book_room():
 
     return render_template('book_room.html', rooms=rooms)
 
+
+# Страница отчетов
 @app.route('/reports')
 def reports():
     return render_template('reports.html')
+
+
+# Отчет: Свободные номера на заданную дату
+@app.route('/report/available_rooms', methods=['GET'])
+def available_rooms_report():
+    date = request.args.get('date')
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Получаем список свободных номеров на заданную дату
+    cursor.execute('''
+        SELECT r.id, r.description
+        FROM rooms r
+        WHERE r.id NOT IN (
+            SELECT g.room_id
+            FROM guests g
+            WHERE (g.check_in_date <= ? AND g.check_out_date >= ?)
+        )
+    ''', (date, date))
+    available_rooms = cursor.fetchall()
+    conn.close()
+
+    return render_template('report_available_rooms.html', available_rooms=available_rooms)
+
+
+# Отчет: Свободные и занятые номера на заданную дату
+@app.route('/report/rooms_status', methods=['GET'])
+def rooms_status_report():
+    date = request.args.get('date')
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Получаем список всех номеров и их статус на заданную дату
+    cursor.execute('''
+        SELECT r.id, r.description,
+            CASE 
+                WHEN r.id NOT IN (
+                    SELECT g.room_id
+                    FROM guests g
+                    WHERE (g.check_in_date <= ? AND g.check_out_date >= ?)
+                )
+                THEN 'Свободен'
+                ELSE 'Занят'
+            END AS status
+        FROM rooms r
+    ''', (date, date))
+    rooms_status = cursor.fetchall()
+    conn.close()
+
+    return render_template('report_rooms_status.html', rooms_status=rooms_status)
+
+
+# Отчет: Количество посетителей в заданный период
+@app.route('/report/guests_in_date_range', methods=['GET'])
+def guests_in_date_range_report():
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Получаем количество гостей, посетивших гостиницу в указанный период
+    cursor.execute('''
+        SELECT COUNT(*) AS guest_count
+        FROM guests g
+        WHERE g.check_in_date BETWEEN ? AND ?
+    ''', (start_date, end_date))
+    guests_count = cursor.fetchone()
+    conn.close()
+
+    return render_template('report_guests_in_date_range.html', guests_count=guests_count)
 
 
 if __name__ == '__main__':
