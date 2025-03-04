@@ -298,5 +298,37 @@ def available_rooms_grouped_report():
                            total_free_rooms=total_free_rooms, report_date=date)
 
 
+# Добавляем маршрут для удаления записи о госте
+@app.route('/delete_guest', methods=['POST'])
+def delete_guest():
+    guest_id = request.form['id']
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM guests WHERE id = ?', (guest_id,))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('guests_list'))
+
+# Добавляем маршрут для обновления записи о госте
+@app.route('/update_guest', methods=['POST'])
+def update_guest():
+    guest_id = request.form['id']
+    check_in_date = request.form['check_in_date']
+    check_out_date = request.form['check_out_date']
+    prepayment = request.form['prepayment']
+    visitor_info = request.form['visitor_info']
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE guests SET check_in_date = ?, check_out_date = ?, prepayment = ?, visitor_info = ? WHERE id = ?
+    ''', (check_in_date, check_out_date, prepayment, visitor_info, guest_id))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('guests_list'))
+
 if __name__ == '__main__':
     app.run(debug=True)
