@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчеты - Сеть гостиниц</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .card {
+            background-color: white;
+            width: 300px;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .card a {
+            display: block;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .card a:hover {
+            background-color: #45a049;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        form {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        label {
+            font-size: 16px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="date"], input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Отчеты</h1>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h3>Отчет: Свободные номера на заданную дату</h3>
+            <form action="{{ url_for('available_rooms_report') }}" method="get">
+                <label for="date">Выберите дату:</label>
+                <input type="date" id="date" name="date" required>
+                <button type="submit">Получить отчет</button>
+            </form>
+        </div>
+        <div class="card">
+            <h3>Отчет: Свободные и занятые номера на заданную дату</h3>
+            <form action="{{ url_for('rooms_status_report') }}" method="get">
+                <label for="date">Выберите дату:</label>
+                <input type="date" id="date" name="date" required>
+                <button type="submit">Получить отчет</button>
+            </form>
+        </div>
+        <div class="card">
+            <h3>Отчет: Количество посетителей в срок с ... по ...</h3>
+            <form action="{{ url_for('guests_in_date_range_report') }}" method="get">
+                <label for="start_date">Дата начала:</label>
+                <input type="date" id="start_date" name="start_date" required>
+                <label for="end_date">Дата окончания:</label>
+                <input type="date" id="end_date" name="end_date" required>
+                <button type="submit">Получить отчет</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Сеть гостиниц | Все права защищены</p>
+    </footer>
+</body>
+</html>

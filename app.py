@@ -164,6 +164,10 @@ def book_room():
 
     return render_template('book_room.html', rooms=rooms)
 
+@app.route('/reports')
+def reports():
+    return render_template('reports.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
