@@ -102,6 +102,7 @@
         .search-container {
             text-align: center;
             margin: 20px 0;
+            position: relative;
         }
         .search-container input[type="text"] {
             width: 80%;
@@ -122,21 +123,39 @@
         .search-container input[type="submit"]:hover {
             background-color: #45a049;
         }
-
+        .autocomplete-suggestions {
+            border: 1px solid #ddd;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            background-color: #fff;
+            z-index: 999;
+            width: 80%;
+            margin-top: 5px;
+        }
+        .autocomplete-suggestion {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .autocomplete-suggestion:hover {
+            background-color: #f4f4f9;
+        }
     </style>
 </head>
 <body>
 <header>
     <div class="logo-container">
-        <img src="img/logo.png" alt="Логотип">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Логотип">
     </div>
     <h1>Добро пожаловать в сеть гостиниц</h1>
 </header>
 <!-- Поле поиска -->
 <div class="search-container">
     <form action="{{ url_for('search_guest') }}" method="get">
-        <input type="text" name="query" placeholder="Введите данные гостя для поиска">
+        <input type="text" id="search-input" name="query" placeholder="Введите данные гостя для поиска" autocomplete="off">
         <input type="submit" value="Поиск">
+        <div id="suggestions" class="autocomplete-suggestions"></div>
     </form>
 </div>
 
@@ -185,6 +204,30 @@
         currentSlide = (currentSlide + step + totalSlides) % totalSlides;
         document.querySelector('.slider').style.transform = `translateX(-${currentSlide * 100}%)`;
     }
+
+    document.getElementById('search-input').addEventListener('input', function() {
+        const query = this.value;
+        if (query.length < 3) {
+            document.getElementById('suggestions').innerHTML = '';
+            return;
+        }
+        fetch(`{{ url_for('autocomplete_guest') }}?query=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                const suggestionsContainer = document.getElementById('suggestions');
+                suggestionsContainer.innerHTML = '';
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'autocomplete-suggestion';
+                    div.textContent = `${item.visitor_info} (Room: ${item.room_id})`;
+                    div.addEventListener('click', function() {
+                        document.getElementById('search-input').value = item.visitor_info;
+                        document.querySelector('form').submit();
+                    });
+                    suggestionsContainer.appendChild(div);
+                });
+            });
+    });
 </script>
 </body>
 </html>

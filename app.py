@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sqlite3
 import datetime
 
@@ -347,6 +347,26 @@ def search_guest():
     conn.close()
 
     return render_template('guests_list.html', guests=guests, query=query)
+
+@app.route('/autocomplete_guest', methods=['GET'])
+def autocomplete_guest():
+    query = request.args.get('query')
+    if not query:
+        return jsonify([])
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT visitor_info, room_id
+        FROM guests
+        WHERE visitor_info LIKE ?
+        LIMIT 10
+    ''', (f'%{query}%',))
+    results = cursor.fetchall()
+    conn.close()
+
+    suggestions = [{'visitor_info': row['visitor_info'], 'room_id': row['room_id']} for row in results]
+    return jsonify(suggestions)
 
 if __name__ == '__main__':
     app.run(debug=True)
